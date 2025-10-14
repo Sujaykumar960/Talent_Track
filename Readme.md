@@ -40,10 +40,15 @@ It serves as a **dummy frontend page** for testing player profile layouts in the
 ## 🗂️ File Structure
 
 📁 talenttrack-profile
+<br>
 │
+<br>
 ├── index.html # Main webpage (Profile + Timeline UI)
+<br>
 ├── styles.css # (Optional) External CSS file for better structure
+<br>
 ├── particles.json # (Optional) Background animation config (if used)
+<br>
 └── README.md # Project documentation
 
 
