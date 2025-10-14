@@ -37,6 +37,9 @@
       border-radius: 8px;
       color: #fff;
     }
+    .meess{
+      border-radius: 50%;
+    }
   </style>
 </head>
 <body>
@@ -297,13 +300,21 @@
       matches.forEach(p=>{
         const card = document.createElement('div');
         card.className = 'playerCard';
-        card.innerHTML = `<h4>${escapeHtml(p.name)}</h4>
+        card.innerHTML = `
+          <h4>${escapeHtml(p.name)}</h4>
           <p><strong>Sport:</strong> ${escapeHtml(p.sport||'-')}  
           <strong>Location:</strong> ${escapeHtml(p.location||'-')}</p>
           <p><strong>Achievements:</strong> ${(p.achievements||[]).map(x=>x.title).slice(0,2).join(', ')||'—'}</p>
           <div class="playerActions">
-            <button class="btn small" onclick='viewProfile("${p.email}")'>View Profile</button>
-            <button class="btn small" onclick='inviteForTrial("${p.email}")'>Invite for Trial</button>
+            <button class="btn small" onclick='viewProfile("${p.email}")'>
+                <a href="player.html">View Profile</a>
+            </button>
+            <button class="btn small" onclick='inviteForTrial("${p.email}")'>
+              <a href="player.html">Invite for Trial</a>
+            </button>
+            <div class="meess" style="border-radius:50%;">
+              <img src="mess.png" alt="Gabriel Frias">  
+            </div>
           </div>`;
         resDiv.appendChild(card);
       });
@@ -322,3 +333,10 @@
   <script src="chatbot.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
