@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dashboard - TalentTrack</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    #map {
+      width: 100%;
+      height: 400px;
+      border-radius: 10px;
+      margin-top: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    #academies {
+      margin-top: 20px;
+    }
+    .academy-card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px 0;
+      box-shadow: 0 0 10px rgba(0,255,255,0.3);
+      transition: 0.3s;
+    }
+    .academy-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 25px rgba(255,0,255,0.4);
+    }
+    #manualLocation {
+      width: 60%;
+      padding: 8px;
+      background: #0b0b0b;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- <header class="topbar"> -->
+    <!-- <div class="logo">TalentTrack</div> -->
+
+    <header class="topbar">
+      <div class="brand">
+        <img src="logo.png" alt="logo" class="loogo">
+        <div class="logo-text">
+          <div class="logo">TalentTrack</div>
+          <div class="tagline">Bridging Talent & Opportunity</div>
+        </div>
+      </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="scouts.html">Scouts</a>
+      <a id="dashboardProfileLink" href="profile.html">My Profile</a>
+      <a id="logoutBtn" href="#">Logout</a>
+    </nav>
+  </header>
+
+  <main class="container dashboard">
+    <section class="left-col">
+      <div class="card" id="meCard"></div>
+
+      <div class="card" id="uploadCard" style="display:none;">
+        <h3>Upload Talent Video</h3>
+        <input id="videoInput" type="file" accept="video/*" />
+        <p><small>Video will be previewed and saved to your profile in local demo.</small></p>
+        <video id="videoPreview" controls style="max-width:100%;display:none;"></video>
+        <button id="saveVideoBtn" class="btn" style="display:none;">Save Video to Profile</button>
+      </div>
+
+      <div class="card" id="achCard" style="display:none;">
+        <h3>Achievements</h3>
+        <ul id="achList"></ul>
+        <a href="achievements.html" class="btn">Manage Achievements</a>
+      </div>
+    </section>
+
+    <section class="right-col">
+      <div class="card">
+        <h3>Explore Players</h3>
+        <div class="searchRow">
+          <input id="searchInput" placeholder="Search by sport, location or name" />
+          <button id="searchBtn" class="btn">Search</button>
+        </div>
+        <div id="results"></div>
+      </div>
+
+
+      <div class="card">
+        <h3>Find Nearby Academies 🏟️</h3>
+        <div>
+          <button class="btn" id="detectBtn">📍 Detect My Location</button>
+          <input type="text" id="manualLocation" placeholder="Enter your city or area" />
+          <button class="btn" id="mapSearchBtn">Search</button>
+        </div>
+        <div id="map"></div>
+        <div id="academies"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>TalentTrack Prototype</p>
+  </footer>
+
+  <script src="app.js"></script>
+  
+
+  <!-- Google Maps API (replace YOUR_API_KEY below) -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkMuOhUSjb8V2QF-HcRq4uax8Jeus-waQ&callback=initMap&libraries=places">
+  </script>
+
+  <script>
+    // ------------------- GOOGLE MAPS SECTION ------------------- //
+    let map, service, infowindow;
+
+    function initMap() {
+      const defaultLocation = { lat: 28.6139, lng: 77.2090 }; // New Delhi default
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: defaultLocation,
+        zoom: 12,
+        styles: [
+          { elementType: "geometry", stylers: [{ color: "#0b0b0b" }] },
+          { elementType: "labels.text.fill", stylers: [{ color: "#ffffff" }] },
+          { featureType: "water", stylers: [{ color: "#111111" }] },
+          { featureType: "road", stylers: [{ color: "#1a1a1a" }] }
+        ]
+      });
+
+      infowindow = new google.maps.InfoWindow();
+
+      document.getElementById("detectBtn").addEventListener("click", detectLocation);
+      document.getElementById("mapSearchBtn").addEventListener("click", manualSearch);
+    }
+
+    function detectLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          const userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          map.setCenter(userLoc);
+          findNearbyAcademies(userLoc);
+        });
+      } else {
+        alert("Geolocation not supported by your browser.");
+      }
+    }
+
+    function manualSearch() {
+      const locationInput = document.getElementById("manualLocation").value;
+      const geocoder = new google.maps.Geocoder();
+
+      geocoder.geocode({ address: locationInput }, (results, status) => {
+        if (status === "OK") {
+          const loc = results[0].geometry.location;
+          map.setCenter(loc);
+          findNearbyAcademies({ lat: loc.lat(), lng: loc.lng() });
+        } else {
+          alert("Location not found!");
+        }
+      });
+    }
+
+    function findNearbyAcademies(location) {
+      const request = {
+        location: location,
+        radius: '5000',
+        keyword: 'sports academy'
+      };
+
+      service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, (results, status) => {
+        const container = document.getElementById("academies");
+        container.innerHTML = "";
+
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          results.forEach((place) => {
+            const marker = new google.maps.Marker({
+              map,
+              position: place.geometry.location,
+              title: place.name
+            });
+
+            marker.addListener("click", () => {
+              infowindow.setContent(`<strong>${place.name}</strong><br>${place.vicinity}`);
+              infowindow.open(map, marker);
+            });
+
+            container.innerHTML += `
+              <div class="academy-card">
+                <h3>${place.name}</h3>
+                <p>${place.vicinity}</p>
+                <small>⭐ Rating: ${place.rating || 'N/A'}</small>
+              </div>`;
+          });
+        } else {
+          container.innerHTML = "<p>No nearby academies found.</p>";
+        }
+      });
+    }
+
+    // ---------------- EXISTING DASHBOARD CODE ---------------- //
+    const current = getCurrentUser();
+    if (!current) location.href = 'signin.html';
+
+    document.getElementById('logoutBtn').addEventListener('click', function(e){
+      e.preventDefault();
+      signOut();
+      location.href = 'signin.html';
+    });
+
+    const meCard = document.getElementById('meCard');
+    function renderMe(){
+      const user = getCurrentUser();
+      meCard.innerHTML = '';
+      if (!user) return;
+      const role = user.role;
+      let html = `<h3>Welcome, ${escapeHtml(user.name)}</h3>
+                  <p><strong>Role:</strong> ${role}</p>`;
+      if (role === 'player'){
+        html += `<p><strong>Sport:</strong> ${escapeHtml(user.sport||'-')}</p>
+                 <p><strong>Location:</strong> ${escapeHtml(user.location||'-')}</p>
+                 <a href="profile.html" class="btn">View Profile</a>`;
+        document.getElementById('uploadCard').style.display = 'block';
+        document.getElementById('achCard').style.display = 'block';
+      } else {
+        html += `<a href="profile.html" class="btn">View Organization</a>`;
+        document.getElementById('uploadCard').style.display = 'none';
+        document.getElementById('achCard').style.display = 'none';
+      }
+      meCard.innerHTML = html;
+    }
+    renderMe();
+
+    const videoInput = document.getElementById('videoInput');
+    const videoPreview = document.getElementById('videoPreview');
+    const saveVideoBtn = document.getElementById('saveVideoBtn');
+    videoInput.addEventListener('change', function(){
+      const f = this.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = function(e){
+        videoPreview.src = e.target.result;
+        videoPreview.style.display = 'block';
+        saveVideoBtn.style.display = 'inline-block';
+      };
+      reader.readAsDataURL(f);
+    });
+    saveVideoBtn.addEventListener('click', function(){
+      const src = videoPreview.src;
+      const user = getCurrentUser();
+      user.videos = user.videos || [];
+      user.videos.push({data: src, caption: 'Skill clip', uploadedAt: new Date().toISOString()});
+      saveUser(user);
+      alert('Video saved to your profile (local demo).');
+      videoPreview.style.display = 'none';
+      saveVideoBtn.style.display = 'none';
+      videoInput.value = '';
+      renderAchievements();
+    });
+
+    function renderAchievements(){
+      const u = getCurrentUser();
+      const list = document.getElementById('achList');
+      list.innerHTML = '';
+      if (!u || !u.achievements || u.achievements.length===0) {
+        list.innerHTML = '<li>No achievements yet.</li>';
+        return;
+      }
+      u.achievements.forEach(a=>{
+        const li = document.createElement('li');
+        li.textContent = `${a.title} (${a.year||'—'})`;
+        list.appendChild(li);
+      });
+    }
+    renderAchievements();
+
+    document.getElementById('searchBtn').addEventListener('click', function(){
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const all = getAllUsers();
+      const resDiv = document.getElementById('results');
+      resDiv.innerHTML = '';
+      const matches = all.filter(u=>{
+        if (u.role !== 'player') return false;
+        return (!q) || (u.sport && u.sport.toLowerCase().includes(q)) || 
+               (u.location && u.location.toLowerCase().includes(q)) || 
+               (u.name && u.name.toLowerCase().includes(q));
+      });
+      if (matches.length===0) {
+        resDiv.innerHTML = '<p>No players found.</p>';
+        return;
+      }
+      matches.forEach(p=>{
+        const card = document.createElement('div');
+        card.className = 'playerCard';
+        card.innerHTML = `<h4>${escapeHtml(p.name)}</h4>
+          <p><strong>Sport:</strong> ${escapeHtml(p.sport||'-')}  
+          <strong>Location:</strong> ${escapeHtml(p.location||'-')}</p>
+          <p><strong>Achievements:</strong> ${(p.achievements||[]).map(x=>x.title).slice(0,2).join(', ')||'—'}</p>
+          <div class="playerActions">
+            <button class="btn small" onclick='viewProfile("${p.email}")'>View Profile</button>
+            <button class="btn small" onclick='inviteForTrial("${p.email}")'>Invite for Trial</button>
+          </div>`;
+        resDiv.appendChild(card);
+      });
+    });
+
+    window.viewProfile = function(email){
+      localStorage.setItem('viewProfileEmail', email);
+      window.location.href = 'profile.html';
+    };
+    window.inviteForTrial = function(email){
+      alert('Invitation sent to ' + email + ' (demo).');
+    };
+
+    if (current.role === 'scout') document.getElementById('searchBtn').click();
+  </script>  <script src="app.js"></script>
+  <script src="chatbot.js"></script>
+</body>
+</html>

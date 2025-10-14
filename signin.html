@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign In / Sign Up - TalentTrack</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">TalentTrack</div>
+    <nav>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main class="container auth">
+    <div class="card">
+      <h2>Sign In</h2>
+      <form id="signinForm">
+        <label>Email</label>
+        <input type="email" id="signinEmail" required />
+        <label>Password</label>
+        <input type="password" id="signinPassword" required />
+        <label>Role</label>
+        <select id="signinRole">
+          <option value="player">Player</option>
+          <option value="scout">Scout / Academy</option>
+        </select>
+        <button type="submit" class="btn">Sign In</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Create Account</h2>
+      <form id="signupForm">
+        <label>Full name</label>
+        <input type="text" id="signupName" required />
+        <label>Email</label>
+        <input type="email" id="signupEmail" required />
+        <label>Password</label>
+        <input type="password" id="signupPassword" required />
+        <label>Role</label>
+        <select id="signupRole">
+          <option value="player">Player</option>
+          <option value="scout">Scout / Academy</option>
+        </select>
+        <div id="playerFields" style="display:block;">
+          <label>Sport</label>
+          <input type="text" id="signupSport" placeholder="e.g. Football" />
+          <label>Age</label>
+          <input type="number" id="signupAge" min="8" max="40" />
+          <label>Location (village/district)</label>
+          <input type="text" id="signupLocation" />
+        </div>
+        <button type="submit" class="btn">Sign Up</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // toggle extra fields for players during signup
+    document.getElementById('signupRole').addEventListener('change', function(){
+      const pf = document.getElementById('playerFields');
+      pf.style.display = this.value === 'player' ? 'block' : 'none';
+    });
+
+    // Sign in handler
+    document.getElementById('signinForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const email = document.getElementById('signinEmail').value.trim();
+      const password = document.getElementById('signinPassword').value;
+      const role = document.getElementById('signinRole').value;
+      if (signInUser(email, password, role)) {
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Invalid credentials or role. Try signing up first.');
+      }
+    });
+
+    // Sign up handler
+    document.getElementById('signupForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const user = {
+        name: document.getElementById('signupName').value.trim(),
+        email: document.getElementById('signupEmail').value.trim(),
+        password: document.getElementById('signupPassword').value,
+        role: document.getElementById('signupRole').value,
+        sport: document.getElementById('signupSport').value.trim(),
+        age: document.getElementById('signupAge').value,
+        location: document.getElementById('signupLocation').value.trim(),
+        profile: {},
+        videos: [],
+        achievements: []
+      };
+      if (createUser(user)) {
+        alert('Account created. You will be signed in now.');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('User with this email already exists.');
+      }
+    });
+  </script>
+</body>
+</html>

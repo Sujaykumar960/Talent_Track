@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scouts & Coaches Directory</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #ebf8ff, #f0fdf4);
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #012166;
+      color: #a1a1a1;
+      text-align: center;
+      /* padding: 0rem; */
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .scout-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .scout-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: 0.3s;
+    }
+
+    .scout-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .scout-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .scout-info {
+      padding: 1rem;
+      color: #333;
+    }
+
+    .scout-info h2 {
+      margin: 0;
+      color: #2b6eff;
+    }
+
+    .scout-info p {
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+
+    .contact {
+      background: #f8fafc;
+      padding: 0.8rem 1rem;
+      border-top: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- <header>
+    <h1>🏅 Scouts, Coaches & Academies</h1>
+    <p>Meet the experts helping rural talent rise to the top</p>
+  </header> -->
+
+      <header class="topbar">
+      <div class="brand">
+        <img src="logo.png" alt="logo" class="loogo">
+        <div class="logo-text">
+          <div class="logo">TalentTrack</div>
+          <div class="tagline">Bridging Talent & Opportunity</div>
+        </div>
+      </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a id="dashboardProfileLink" href="profile.html">My Profile</a>
+      <a id="logoutBtn" href="#">Logout</a>
+    </nav>
+  </header>
+  <header class="scout">
+    <h1>🏅 Scouts</h1>
+    <p>Meet the experts helping rural talent rise to the top</p>
+  </header>
+
+  <section class="scout-container" id="scoutContainer">
+    <!-- Profiles will load here -->
+  </section>
+
+  <footer>© 2025 TalentTrack | Connecting Rural Sports Talent</footer>
+
+  <script>
+    const scouts = [
+      {
+        name: "Rajesh Kumar",
+        role: "Scout",
+        experience: "8 years",
+        academy: "Elite Sports Academy",
+        location: "Patna, Bihar",
+        email: "rajesh@example.com",
+        phone: "+91 9876543210",
+        photo: "https://images.unsplash.com/photo-1603808033192-082d694e4a88?auto=format&fit=crop&w=600&q=60",
+        bio: "Rajesh has over 8 years of experience scouting rural football and athletics players. Known for discovering hidden talents in Bihar and Jharkhand."
+      },
+      {
+        name: "Anjali Sharma",
+        role: "Coach",
+        experience: "10 years",
+        academy: "Victory Athletics Club",
+        location: "Lucknow, Uttar Pradesh",
+        email: "anjali.coach@example.com",
+        phone: "+91 9876512345",
+        photo: "https://images.unsplash.com/photo-1603985529862-9a793618fa5d?auto=format&fit=crop&w=600&q=60",
+        bio: "Anjali has trained over 200 young athletes in track & field, with several competing at state and national level events."
+      },
+      {
+        name: "Amit Verma",
+        role: "Academy Director",
+        experience: "15 years",
+        academy: "Rural Sports Foundation",
+        location: "Nagpur, Maharashtra",
+        email: "amitacademy@example.com",
+        phone: "+91 9901234567",
+        photo: "https://images.unsplash.com/photo-1571019613913-7c74c8cde0b9?auto=format&fit=crop&w=600&q=60",
+        bio: "Founder of RSF, Amit has been instrumental in building infrastructure and support networks for rural sports in central India."
+      },
+      {
+        name: "Priya Nair",
+        role: "Scout",
+        experience: "6 years",
+        academy: "SouthZone Sports Club",
+        location: "Kochi, Kerala",
+        email: "priyanair@example.com",
+        phone: "+91 9912345678",
+        photo: "https://images.unsplash.com/photo-1598970434795-0c54fe7c0642?auto=format&fit=crop&w=600&q=60",
+        bio: "Priya specializes in scouting under-18 talent in athletics and badminton from southern India."
+      }
+    ];
+
+    const container = document.getElementById("scoutContainer");
+
+    scouts.forEach(s => {
+      const card = document.createElement("div");
+      card.classList.add("scout-card");
+      card.innerHTML = `
+        <img src="${s.photo}" alt="${s.name}">
+        <div class="scout-info">
+          <h2>${s.name}</h2>
+          <p><strong>Role:</strong> ${s.role}</p>
+          <p><strong>Experience:</strong> ${s.experience}</p>
+          <p><strong>Academy:</strong> ${s.academy}</p>
+          <p>${s.bio}</p>
+        </div>
+        <div class="contact">
+          📍 ${s.location} <br>
+          📧 ${s.email} <br>
+          📞 ${s.phone}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  </script>
+</body>
+</html>

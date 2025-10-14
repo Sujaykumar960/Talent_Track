@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Achievements - TalentTrack</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">TalentTrack</div>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a id="logout3" href="#">Logout</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h2>Achievements</h2>
+      <form id="achForm">
+        <label>Title</label>
+        <input id="achTitle" required />
+        <label>Year</label>
+        <input id="achYear" type="number" min="1900" max="2100" />
+        <label>Notes</label>
+        <textarea id="achNotes" rows="3"></textarea>
+        <button class="btn" type="submit">Add Achievement</button>
+      </form>
+
+      <h3>Your Achievements</h3>
+      <ul id="achListFull"></ul>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    const user = getCurrentUser();
+    if (!user) location.href='signin.html';
+    document.getElementById('logout3').addEventListener('click', function(e){
+      e.preventDefault();
+      signOut(); location.href='signin.html';
+    });
+
+    function renderAll(){
+      const list = document.getElementById('achListFull');
+      list.innerHTML = '';
+      (user.achievements||[]).forEach((a,i)=>{
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${escapeHtml(a.title)}</strong> (${escapeHtml(a.year||'—')}) - ${escapeHtml(a.notes||'')}`;
+        list.appendChild(li);
+      });
+    }
+    renderAll();
+
+    document.getElementById('achForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const entry = {
+        title: document.getElementById('achTitle').value.trim(),
+        year: document.getElementById('achYear').value,
+        notes: document.getElementById('achNotes').value.trim()
+      };
+      user.achievements = user.achievements || [];
+      user.achievements.push(entry);
+      saveUser(user);
+      alert('Achievement added');
+      renderAll();
+      document.getElementById('achForm').reset();
+    });
+  </script>
+  <script src="chatbot.js"></script>
+</body>
+</html>

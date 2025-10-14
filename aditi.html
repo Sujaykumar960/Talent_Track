@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign In / Sign Up - TalentTrack</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+/* 🌄 Background + Layout */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: url('./football.avif') no-repeat center center/cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Dark overlay for contrast */
+.overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 0;
+}
+
+/* ⚽ Floating football animation */
+@keyframes floatBall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+  50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(360deg); opacity: 0.8; }
+}
+
+.football {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: url('https://cdn-icons-png.flaticon.com/512/861/861512.png') no-repeat center/contain;
+  opacity: 0.3;
+  top: 12%;
+  left: 10%;
+  animation: floatBall 6s ease-in-out infinite;
+}
+
+.football2 {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: url('https://cdn-icons-png.flaticon.com/512/861/861512.png') no-repeat center/contain;
+  opacity: 0.25;
+  bottom: 10%;
+  right: 15%;
+  animation: floatBall 8s ease-in-out infinite reverse;
+}
+
+/* 🔹 Container */
+.container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  animation: fadeIn 1.2s ease;
+}
+
+/* 🔹 Card style (modern look) */
+.card {
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  padding: 18px 22px;
+  border-radius: 14px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+  width: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+
+/* 🔹 Headings */
+h2 {
+  text-align: center;
+  color: #2b6eff;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* 🔹 Inputs */
+label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 13px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus {
+  border-color: #2b6eff;
+  box-shadow: 0 0 6px rgba(43,110,255,0.4);
+}
+
+/* 🔹 Buttons */
+.btn {
+  width: 100%;
+  padding: 8px;
+  background: #2b6eff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 3px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background: #174ecb;
+}
+
+/* ✨ Fade In Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .card {
+    width: 85%;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="overlay"></div>
+<div class="football"></div>
+<div class="football2"></div>
+
+<div class="container">
+  <!-- 🔹 Sign In -->
+  <div class="card">
+    <h2>Sign In</h2>
+    <form id="signinForm">
+      <label>Email</label>
+      <input type="email" id="signinEmail" required>
+
+      <label>Password</label>
+      <input type="password" id="signinPassword" required>
+
+      <label>Role</label>
+      <select id="signinRole">
+        <option value="player">Player</option>
+        <option value="scout">Scout / Academy</option>
+      </select>
+
+      <button type="submit" class="btn">Sign In</button>
+    </form>
+  </div>
+
+  <!-- 🔹 Sign Up -->
+  <div class="card">
+    <h2>Create Account</h2>
+    <form id="signupForm">
+      <label>Full Name</label>
+      <input type="text" id="signupName" required>
+
+      <label>Email</label>
+      <input type="email" id="signupEmail" required>
+
+      <label>Password</label>
+      <input type="password" id="signupPassword" required>
+
+      <label>Role</label>
+      <select id="signupRole">
+        <option value="player">Player</option>
+        <option value="scout">Scout / Academy</option>
+      </select>
+
+      <div id="playerFields">
+        <label>Sport</label>
+        <input type="text" id="signupSport">
+        <label>Age</label>
+        <input type="number" id="signupAge">
+        <label>Location</label>
+        <input type="text" id="signupLocation">
+      </div>
+
+      <button type="submit" class="btn">Sign Up</button>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+/* 🎯 Show/Hide extra fields */
+document.getElementById('signupRole').addEventListener('change', function() {
+  document.getElementById('playerFields').style.display = 
+    this.value === 'player' ? 'block' : 'none';
+});
+
+/* 🎯 Sign In */
+document.getElementById('signinForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('signinEmail').value.trim();
+  const password = document.getElementById('signinPassword').value;
+  const role = document.getElementById('signinRole').value;
+  const ok = await signInUser(email, password, role);
+  if (ok) window.location.href = 'dashboard.html';
+  else alert('Invalid credentials or server error!');
+});
+
+/* 🎯 Sign Up */
+document.getElementById('signupForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const user = {
+    name: document.getElementById('signupName').value.trim(),
+    email: document.getElementById('signupEmail').value.trim(),
+    password: document.getElementById('signupPassword').value,
+    role: document.getElementById('signupRole').value,
+    sport: document.getElementById('signupSport').value.trim(),
+    age: document.getElementById('signupAge').value,
+    location: document.getElementById('signupLocation').value.trim()
+  };
+  const ok = await createUser(user);
+  if (ok) window.location.href = 'dashboard.html';
+  else alert('Signup failed or user already exists!');
+});
+</script>
+</body>
+</html>
