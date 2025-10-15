@@ -58,7 +58,7 @@
     <nav>
       <a href="index.html">Home</a>
       <a href="scouts.html">Scouts</a>
-      <a id="dashboardProfileLink" href="profile.html">My Profile</a>
+      <a id="dashboardProfileLink" href="coach.html">My Profile</a>
       <a id="logoutBtn" href="#">Logout</a>
     </nav>
   </header>
@@ -227,11 +227,11 @@
       if (role === 'player'){
         html += `<p><strong>Sport:</strong> ${escapeHtml(user.sport||'-')}</p>
                  <p><strong>Location:</strong> ${escapeHtml(user.location||'-')}</p>
-                 <a href="profile.html" class="btn">View Profile</a>`;
+                 <a href="profile.html" class="btn">Edit Profile</a>`;
         document.getElementById('uploadCard').style.display = 'block';
         document.getElementById('achCard').style.display = 'block';
       } else {
-        html += `<a href="profile.html" class="btn">View Organization</a>`;
+        html += `<a href="#" class="btn">View Organization</a>`;
         document.getElementById('uploadCard').style.display = 'none';
         document.getElementById('achCard').style.display = 'none';
       }
